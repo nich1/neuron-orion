@@ -1,0 +1,31 @@
+services:
+  agent-platform:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+      OLLAMA_URL: "http://host.docker.internal:11434"
+      QDRANT_URL: "http://qdrant:6333"
+      DB_PATH: "/data/memory.db"
+      DEFAULT_MODEL: "qwen2.5:7b"
+      EMBEDDING_MODEL: "nomic-embed-text"
+    volumes:
+      - agent-data:/data
+    depends_on:
+      qdrant:
+        condition: service_healthy
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  agent-data:
+  qdrant-data:

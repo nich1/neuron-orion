@@ -3,15 +3,11 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import TYPE_CHECKING
+from pydantic_ai import RunContext
 
+from ..deps import AgentDeps
 from ..memory.persistent import list_namespaces, load_namespace, read_memory, write_memory
 from ..settings import settings
-
-if TYPE_CHECKING:
-    from pydantic_ai import RunContext
-
-    from ..deps import AgentDeps
 
 log = logging.getLogger(__name__)
 

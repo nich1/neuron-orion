@@ -2,17 +2,11 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
-
 import httpx
+from pydantic_ai import RunContext
 
+from ..deps import AgentDeps
 from ..settings import settings
-
-if TYPE_CHECKING:
-    from pydantic_ai import RunContext
-    from qdrant_client import AsyncQdrantClient
-
-    from ..deps import AgentDeps
 
 log = logging.getLogger(__name__)
 

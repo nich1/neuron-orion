@@ -4,15 +4,11 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from typing import TYPE_CHECKING
-
 from bs4 import BeautifulSoup
 from duckduckgo_search import DDGS
+from pydantic_ai import RunContext
 
-if TYPE_CHECKING:
-    from pydantic_ai import RunContext
-
-    from ..deps import AgentDeps
+from ..deps import AgentDeps
 
 log = logging.getLogger(__name__)
 

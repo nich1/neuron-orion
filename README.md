@@ -48,8 +48,14 @@ Pydantic AI agent platform for the Neuron home server. Orchestrates specialist a
 ## Docker
 
 ```bash
-docker build -t niches1/nich-agent:latest .
-docker push niches1/nich-agent:latest
+docker build -t niches1/neuron-orion:latest .
+docker push niches1/neuron-orion:latest
+```
+
+Pull the image:
+
+```bash
+docker pull niches1/neuron-orion:latest
 ```
 
 ## Development

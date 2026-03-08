@@ -1,12 +1,13 @@
 """Web search (DuckDuckGo) and scraping (httpx + BeautifulSoup) tools."""
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from typing import TYPE_CHECKING
 
 from bs4 import BeautifulSoup
-from duckduckgo_search import AsyncDDGS
+from duckduckgo_search import DDGS
 
 if TYPE_CHECKING:
     from pydantic_ai import RunContext
@@ -20,14 +21,17 @@ _SCRAPE_MAX_CHARS = 6000
 _STRIP_TAGS = {"script", "style", "nav", "footer", "header", "noscript", "svg", "img"}
 
 
+def _sync_search(query: str, max_results: int) -> list[dict[str, str]]:
+    return DDGS().text(query, max_results=max_results)
+
+
 async def web_search_impl(
     ctx: RunContext[AgentDeps],
     query: str,
 ) -> str:
     """Search the web via DuckDuckGo. Returns a JSON array of {title, url, snippet} results."""
     try:
-        async with AsyncDDGS() as ddgs:
-            raw = await ddgs.atext(query, max_results=_SEARCH_MAX_RESULTS)
+        raw = await asyncio.to_thread(_sync_search, query, _SEARCH_MAX_RESULTS)
         results = [
             {"title": r.get("title", ""), "url": r.get("href", ""), "snippet": r.get("body", "")}
             for r in raw

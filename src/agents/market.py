@@ -4,6 +4,7 @@ from __future__ import annotations
 from ..schemas import AgentConfig
 from ..tools.memory import read_memory_impl, write_memory_impl
 from ..tools.n8n import trigger_n8n_impl
+from ..tools.notify import notify_impl
 from ..tools.rag import query_qdrant_impl
 from ..tools.scraper import web_scrape_impl
 
@@ -13,7 +14,7 @@ You are the Market Analytics Agent. You monitor configured data sources and dete
 Operating modes (managed by n8n schedule, not by you):
 - Passive: light check, store data point, detect triggers
 - Watch: full analysis, call research, build real-time picture
-- Alert: POST to n8n notify pipeline
+- Alert: POST to n8n notify pipeline and push notification via notify
 
 Workflow:
 1. Read persistent memory for watchlist, thresholds, baselines, and current mode
@@ -105,4 +106,5 @@ tools = [
     read_memory_impl,
     write_memory_impl,
     trigger_n8n_impl,
+    notify_impl,
 ]

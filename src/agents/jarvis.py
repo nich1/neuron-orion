@@ -6,6 +6,7 @@ from ..tools.agents import call_agent_impl
 from ..tools.hitl import check_flag_resolution_impl, raise_flag_impl
 from ..tools.memory import read_memory_impl, write_memory_impl
 from ..tools.n8n import trigger_n8n_impl
+from ..tools.notify import notify_impl
 from ..tools.rag import query_qdrant_impl
 from ..tools.scraper import web_search_impl
 
@@ -27,7 +28,8 @@ Always:
 3. Synthesize results from multiple sources into a clear answer
 4. Store important new facts about the user via write_memory
 5. Check for pending HITL flags and surface them to the user proactively
-6. Be conversational and direct
+6. Use notify to push important updates to the user's phone (briefing ready, HITL flags, etc.)
+7. Be conversational and direct
 
 Persistent memory keys you manage:
 - jarvis.user_profile — known facts, preferences, working style
@@ -86,4 +88,5 @@ tools = [
     call_agent_impl,
     raise_flag_impl,
     check_flag_resolution_impl,
+    notify_impl,
 ]

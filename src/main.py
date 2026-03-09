@@ -86,11 +86,20 @@ async def health():
     except Exception:
         pass
 
+    ntfy_ok = False
+    try:
+        if client:
+            resp = await client.get(f"{settings.NTFY_URL}/v1/health", timeout=5.0)
+            ntfy_ok = resp.status_code == 200
+    except Exception:
+        pass
+
     return {
         "status": "ok",
         "ollama": settings.OLLAMA_URL,
         "qdrant": settings.QDRANT_URL,
         "n8n": settings.N8N_URL,
+        "ntfy": "reachable" if ntfy_ok else "unreachable",
         "auth_server": "reachable" if auth_ok else "unreachable",
         "agents_registered": agent_count,
         "hitl_pending": len(pending),

@@ -41,6 +41,7 @@ Pydantic AI agent platform for the Neuron home server. Orchestrates specialist a
 | `N8N_URL` | `http://localhost:5678` | n8n endpoint |
 | `SEQ_URL` | `http://localhost:5341` | Seq logging endpoint |
 | `SEQ_API_KEY` | (empty) | Seq API key |
+| `NTFY_URL` | `http://localhost:8090` | Ntfy notification server |
 | `DB_PATH` | `data/memory.db` | SQLite database path |
 | `DEFAULT_MODEL` | `qwen2.5:7b` | Default LLM model |
 | `EMBEDDING_MODEL` | `nomic-embed-text` | Embedding model |

@@ -7,6 +7,7 @@ services:
       PORT: "8000"
       OLLAMA_URL: "http://host.docker.internal:11434"
       QDRANT_URL: "http://qdrant:6333"
+      NTFY_URL: "http://ntfy:80"
       DB_PATH: "/data/memory.db"
       DEFAULT_MODEL: "qwen2.5:7b"
       EMBEDDING_MODEL: "nomic-embed-text"
@@ -15,6 +16,8 @@ services:
     depends_on:
       qdrant:
         condition: service_healthy
+    networks:
+      - ai-network
 
   qdrant:
     image: qdrant/qdrant:latest
@@ -25,7 +28,26 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+    networks:
+      - ai-network
+
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: ntfy
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - ntfy_data:/var/lib/ntfy
+    command: serve
+    networks:
+      - ai-network
 
 volumes:
   agent-data:
   qdrant-data:
+  ntfy_data:
+
+networks:
+  ai-network:
+    driver: bridge

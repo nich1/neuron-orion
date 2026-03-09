@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from ..schemas import AgentConfig
 from ..tools.hitl import check_flag_resolution_impl, raise_flag_impl
+from ..tools.notify import notify_impl
 from ..tools.memory import (
     read_all_namespaces_impl,
     read_memory_impl,
@@ -32,6 +33,7 @@ use raise_flag to request human review. Include the relevant context and your pr
 Severity levels: "info" (FYI only), "review" (needs decision), "blocking" (do NOT proceed without approval).
 For non-blocking flags, proceed with your best judgment after raising. For blocking flags, skip the action.
 You can check if a flag was resolved with check_flag_resolution.
+Use notify with priority "high" when raising blocking HITL flags so the user is alerted promptly.
 
 Return a consolidation report as JSON:
 {
@@ -78,4 +80,5 @@ tools = [
     ingest_to_qdrant_impl,
     raise_flag_impl,
     check_flag_resolution_impl,
+    notify_impl,
 ]

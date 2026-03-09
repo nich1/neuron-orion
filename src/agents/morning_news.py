@@ -4,6 +4,7 @@ from __future__ import annotations
 from ..schemas import AgentConfig
 from ..tools.memory import read_memory_impl, write_memory_impl
 from ..tools.n8n import trigger_n8n_impl
+from ..tools.notify import notify_impl
 from ..tools.rag import query_qdrant_impl
 
 SYSTEM_PROMPT = """\
@@ -15,6 +16,7 @@ Workflow:
 3. Query Qdrant for relevant prior research and stored articles
 4. Build a structured daily briefing prioritizing topics the user has rated highly before
 5. Use trigger_n8n to send the completed briefing for delivery
+6. Use notify to push a notification when the briefing is ready
 
 Return your briefing as a JSON object:
 {
@@ -86,4 +88,5 @@ tools = [
     read_memory_impl,
     write_memory_impl,
     trigger_n8n_impl,
+    notify_impl,
 ]

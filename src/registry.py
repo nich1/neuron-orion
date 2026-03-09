@@ -9,12 +9,13 @@ from datetime import datetime, timezone
 from typing import Any, Callable
 
 import httpx
-from fastapi import APIRouter, FastAPI, HTTPException
+from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from jsonschema import ValidationError, validate
 from pydantic_ai import Agent
 
 from .deps import AgentDeps
 from .memory.persistent import load_namespace
+from .middleware.auth import AuthenticatedUser, require_auth
 from .schemas import AgentConfig, AgentInfo, AgentRunRequest, AgentRunResponse, RunStatus
 from .settings import settings
 
@@ -199,7 +200,10 @@ class AgentRegistry:
         registry = self
 
         @router.post("/run", response_model=AgentRunResponse)
-        async def run_endpoint(request: AgentRunRequest) -> AgentRunResponse:
+        async def run_endpoint(
+            request: AgentRunRequest,
+            _user: AuthenticatedUser = Depends(require_auth),
+        ) -> AgentRunResponse:
             entry = registry._get_entry(agent_name)
             if not entry.config.is_active:
                 raise HTTPException(status_code=404, detail=f"Agent '{agent_name}' is not active")
@@ -213,11 +217,16 @@ class AgentRegistry:
         registry = self
 
         @router.get("")
-        async def list_agents() -> list[AgentInfo]:
+        async def list_agents(
+            _user: AuthenticatedUser = Depends(require_auth),
+        ) -> list[AgentInfo]:
             return registry.list_agents()
 
         @router.post("/{name}/activate")
-        async def activate_agent(name: str) -> dict[str, str]:
+        async def activate_agent(
+            name: str,
+            _user: AuthenticatedUser = Depends(require_auth),
+        ) -> dict[str, str]:
             try:
                 registry.activate(name)
             except ValueError as e:
@@ -225,7 +234,10 @@ class AgentRegistry:
             return {"status": "activated", "agent": name}
 
         @router.post("/{name}/deactivate")
-        async def deactivate_agent(name: str) -> dict[str, str]:
+        async def deactivate_agent(
+            name: str,
+            _user: AuthenticatedUser = Depends(require_auth),
+        ) -> dict[str, str]:
             try:
                 registry.deactivate(name)
             except ValueError as e:
@@ -233,7 +245,11 @@ class AgentRegistry:
             return {"status": "deactivated", "agent": name}
 
         @router.get("/{name}/runs/{run_id}")
-        async def get_run_status(name: str, run_id: str) -> RunStatus:
+        async def get_run_status(
+            name: str,
+            run_id: str,
+            _user: AuthenticatedUser = Depends(require_auth),
+        ) -> RunStatus:
             status = registry.get_run(run_id)
             if status is None or status.agent_name != name:
                 raise HTTPException(status_code=404, detail="Run not found")

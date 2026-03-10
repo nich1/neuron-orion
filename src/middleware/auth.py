@@ -1,6 +1,7 @@
 """Auth dependency — validates JWTs and API keys against neuron-cerberus."""
 from __future__ import annotations
 
+import hmac
 from dataclasses import dataclass
 
 import httpx
@@ -45,6 +46,11 @@ async def require_auth(request: Request) -> AuthenticatedUser:
     if not token:
         await log.awarning("auth.empty_token", path=request.url.path)
         raise HTTPException(status_code=401, detail="Empty Authorization token")
+
+    if settings.INTERNAL_API_KEY and hmac.compare_digest(token, settings.INTERNAL_API_KEY):
+        structlog.contextvars.bind_contextvars(user_id=0, username="internal-service")
+        await log.adebug("auth.internal_service", path=request.url.path)
+        return AuthenticatedUser(user_id=0, username="internal-service", auth_method="internal")
 
     client = await _get_http_client(request)
 

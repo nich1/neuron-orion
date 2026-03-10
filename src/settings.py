@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     SEQ_API_KEY: str = ""
     NTFY_URL: str = "http://localhost:8090"
     API_TOKEN: str = ""
+    INTERNAL_API_KEY: str = ""
     DB_PATH: str = "data/memory.db"
     DEFAULT_MODEL: str = "qwen2.5:7b"
     EMBEDDING_MODEL: str = "nomic-embed-text"
